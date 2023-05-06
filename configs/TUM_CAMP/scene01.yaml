@@ -1,0 +1,7 @@
+inherit_from: configs/TUM_CAMP/tumcamp.yaml
+mapping:
+  bound: [[-2.0,11.0],[-2.0,11.5],[-2.0,5.5]]
+  marching_cubes_bound: [[-2.0,11.0],[-2.0,11.5],[-2.0,5.5]]
+data:
+  input_folder: Datasets/TUM_CAMP/scene01
+  output: output/TUM_CAMP/scene01

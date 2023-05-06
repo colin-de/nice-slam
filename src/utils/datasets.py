@@ -178,6 +178,37 @@ class Azure(BaseDataset):
                 self.poses.append(c2w)
 
 
+class TUM_CAMP(BaseDataset):
+    def __init__(self, cfg, args, scale, device='cuda:0'
+                 ):
+        super(TUM_CAMP, self).__init__(cfg, args, scale, device)
+        self.input_folder = os.path.join(self.input_folder)
+        self.color_paths = sorted(glob.glob(os.path.join(self.input_folder,
+        'rgb', '*.png')), key=lambda x: int(os.path.basename(x)[:-4]))
+        print(os.path)
+        self.depth_paths = sorted(glob.glob(os.path.join(self.input_folder,
+        '_depth_gt', '*.png')), key=lambda x: int(os.path.basename(x)[:-4]))
+        self.load_poses(os.path.join(self.input_folder, '_camera_pose'))
+        self.n_img = len(self.color_paths)
+
+    def load_poses(self, path):
+        self.poses = []
+        pose_paths = sorted(glob.glob(os.path.join(path, '*.txt')),
+                            key=lambda x: int(os.path.basename(x)[:-4]))
+        for pose_path in pose_paths:
+            with open(pose_path, "r") as f:
+                lines = f.readlines()
+            ls = []
+            for line in lines:
+                l = list(map(float, line.split(' ')))
+                ls.append(l)
+            c2w = np.array(ls).reshape(4, 4)
+            c2w[:3, 1] *= -1
+            c2w[:3, 2] *= -1
+            c2w = torch.from_numpy(c2w).float()
+            self.poses.append(c2w)
+
+
 class ScanNet(BaseDataset):
     def __init__(self, cfg, args, scale, device='cuda:0'
                  ):
@@ -326,5 +357,6 @@ dataset_dict = {
     "scannet": ScanNet,
     "cofusion": CoFusion,
     "azure": Azure,
-    "tumrgbd": TUM_RGBD
+    "tumrgbd": TUM_RGBD,
+    "tumcamp": TUM_CAMP
 }
