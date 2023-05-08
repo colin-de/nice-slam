@@ -7,6 +7,9 @@ import torch
 from src import config
 from src.NICE_SLAM import NICE_SLAM
 
+import warnings
+warnings.filterwarnings("ignore")
+
 
 def setup_seed(seed):
     torch.manual_seed(seed)
